@@ -1,0 +1,127 @@
+# Laravel & PHP
+/vendor/
+/node_modules/
+/public/storage
+/public/hot
+/storage/*.key
+.env
+.env.backup
+.env.production
+.phpunit.result.cache
+Homestead.json
+Homestead.yaml
+auth.json
+npm-debug.log
+yarn-error.log
+
+# IDE & Editor
+/.idea
+/.vscode
+*.swp
+*.swo
+*~
+.project
+.classpath
+.c9/
+*.launch
+.settings/
+*.sublime-workspace
+*.sublime-project
+
+# Operating System
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Testing
+/coverage
+.phpunit.cache
+/phpunit.xml
+/phpstan.neon
+
+# Build & Dependencies
+/public/build
+/public/mix-manifest.json
+/public/css/app.css
+/public/js/app.js
+composer.lock
+package-lock.json
+yarn.lock
+
+# Logs
+/storage/logs
+*.log
+/storage/debugbar
+
+# Cache
+/bootstrap/cache/*
+!/bootstrap/cache/.gitkeep
+/storage/framework/cache/*
+!/storage/framework/cache/.gitkeep
+!/storage/framework/cache/data/.gitkeep
+/storage/framework/sessions/*
+!/storage/framework/sessions/.gitkeep
+/storage/framework/views/*
+!/storage/framework/views/.gitkeep
+
+# Database
+*.sqlite
+*.sqlite3
+/database/*.sqlite
+/database/*.sqlite3
+
+# Documentation
+/docs
+/_ide_helper.php
+/_ide_helper_models.php
+.phpstorm.meta.php
+
+# Docker
+/docker/volumes
+docker-compose.override.yml
+
+# Backup files
+*.bak
+*.backup
+*.old
+*.orig
+*.tmp
+
+# JWT Keys
+/keys/jwt/*.key
+/keys/jwt/*.pem
+!/keys/jwt/.gitkeep
+
+# Uploaded files
+/public/uploads/*
+!/public/uploads/.gitkeep
+/storage/app/public/*
+!/storage/app/public/.gitkeep
+
+# Phinx migrations
+/phinx.yml
+/phinx.php.dist
+
+# Telescope
+/public/vendor/telescope
+/storage/telescope
+
+# Horizon
+/public/vendor/horizon
+
+# Mix
+/public/mix.js
+/public/mix-manifest.json
+
+# Webpack
+/public/dist
+/public/build
+webpack.mix.js.bak
+
+# API Documentation
+/public/api-docs
+/storage/api-docs
+
+# Debugbar
+/storage/debugbar/*
+!/storage/debugbar/.gitkeep
