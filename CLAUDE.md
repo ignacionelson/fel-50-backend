@@ -136,6 +136,82 @@ fel-api/
 ### Bug Fixes
 - [ ] TBD
 
+## Testing
+
+### Test Structure
+The project uses **PHPUnit 10** for unit and feature testing:
+
+```
+tests/
+├── bootstrap.php          # Test bootstrap file
+├── TestCase.php          # Base test class with helpers
+├── Unit/                 # Unit tests for individual classes
+│   ├── UserModelTest.php
+│   └── JWTServiceTest.php
+└── Feature/              # Integration tests for API endpoints
+    ├── AuthenticationTest.php
+    ├── PublicRoutesTest.php
+    ├── PrivateRoutesTest.php
+    ├── AdminRoutesTest.php
+    └── UserRoleManagementTest.php
+```
+
+### Running Tests
+```bash
+# Run all tests
+composer test
+
+# Run with coverage report
+composer test-coverage
+
+# Run specific test file
+vendor/bin/phpunit tests/Feature/AuthenticationTest.php
+
+# Run specific test method
+vendor/bin/phpunit --filter testUserLoginSuccess tests/Feature/AuthenticationTest.php
+```
+
+### Test Database
+- Uses in-memory SQLite for fast, isolated tests
+- Each test case sets up and tears down its own database schema
+- Test users are automatically created for authentication testing:
+  - Regular user: `test@example.com` / `password123` (roles: `visitante`)
+  - Admin user: `admin@example.com` / `password123` (roles: `admin`)
+
+### Writing Tests
+Always extend the base `TestCase` class which provides:
+- `createRequest()` - Create HTTP requests
+- `createAuthenticatedRequest()` - Create requests with user token
+- `createAdminRequest()` - Create requests with admin token
+- `assertSuccessResponse()` - Assert successful API response
+- `assertErrorResponse()` - Assert error API response
+- `assertValidationErrorResponse()` - Assert validation errors
+
+Example test:
+```php
+public function testCreateProducto(): void
+{
+    $productData = [
+        'nombre' => 'Producto Test',
+        'precio_unitario' => 99.99,
+        'cantidad_stock' => 10
+    ];
+
+    $request = $this->createAuthenticatedRequest('POST', '/productos', $productData);
+    $response = $this->app->handle($request);
+
+    $body = $this->assertSuccessResponse($response, 201);
+    $this->assertEquals('Producto creado exitosamente', $body['message']);
+}
+```
+
+### Maintaining Tests
+**ALWAYS update tests when:**
+- Adding new endpoints
+- Modifying existing endpoints
+- Changing request/response formats
+- Adding new models or services
+
 ## Database Management
 
 ### Migration System
