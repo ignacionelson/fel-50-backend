@@ -44,7 +44,19 @@ I will **ALWAYS** update the Postman collection file (`postman_collection.json`)
 - ✅ Delete endpoints
 - ✅ Update authentication methods
 
-This ensures the API documentation stays synchronized with the actual implementation.
+**CRITICAL: Postman Collection Language Requirements:**
+- **User-facing text MUST be in Spanish:** Request names, folder names, descriptions, variable descriptions, API response messages content
+- **Technical elements MUST be in English:** HTTP methods, headers, URLs, JSON keys, status codes, technical parameter names, **response example status names** (Success, Error, Created, etc.)
+- **Example data MUST use Argentine context:** Names like "Juan Pérez", emails like "juan@ejemplo.com", phone numbers like "+5491134567890"
+
+Examples of correct translations:
+- Request names: "Registrar Usuario", "Obtener Productos", "Actualizar Cliente"
+- Folder names: "Autenticación", "Gestión de Productos", "Administración"  
+- **Response names: "Success", "Validation Error", "Not Found"** (keep technical status terms in English)
+- Descriptions: "Endpoint para obtener la lista de productos"
+- API response message content: `{"message": "Usuario registrado exitosamente"}` (Spanish content, English keys)
+
+This ensures the API documentation stays synchronized with the actual implementation and provides a localized Spanish experience.
 
 ## Current Architecture
 
