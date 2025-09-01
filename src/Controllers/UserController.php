@@ -15,15 +15,13 @@ class UserController
         $user = User::find($userId);
         
         if (!$user) {
-            $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+            return errorResponse($response, 'Usuario no encontrado', 404);
         }
 
         try {
             $user->delete(); // Soft delete
             
-            $responseData = [
-                'message' => 'Usuario eliminado exitosamente',
+            $userData = [
                 'user' => [
                     'id' => $user->id,
                     'uuid' => $user->uuid,
@@ -34,12 +32,10 @@ class UserController
                 ]
             ];
 
-            $response->getBody()->write(json_encode($responseData));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            return successResponse($response, $userData, 'Usuario eliminado exitosamente');
 
         } catch (\Exception $e) {
-            $response->getBody()->write(json_encode(['error' => 'Error al eliminar usuario']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+            return errorResponse($response, 'Error al eliminar usuario', 500);
         }
     }
 
@@ -49,20 +45,17 @@ class UserController
         $user = User::withTrashed()->find($userId);
         
         if (!$user) {
-            $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+            return errorResponse($response, 'Usuario no encontrado', 404);
         }
 
         if (!$user->trashed()) {
-            $response->getBody()->write(json_encode(['error' => 'El usuario no está eliminado']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(400);
+            return errorResponse($response, 'El usuario no está eliminado', 400);
         }
 
         try {
             $user->restore();
             
-            $responseData = [
-                'message' => 'Usuario restaurado exitosamente',
+            $userData = [
                 'user' => [
                     'id' => $user->id,
                     'uuid' => $user->uuid,
@@ -75,12 +68,10 @@ class UserController
                 ]
             ];
 
-            $response->getBody()->write(json_encode($responseData));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            return successResponse($response, $userData, 'Usuario restaurado exitosamente');
 
         } catch (\Exception $e) {
-            $response->getBody()->write(json_encode(['error' => 'Error al restaurar usuario']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+            return errorResponse($response, 'Error al restaurar usuario', 500);
         }
     }
 
@@ -90,32 +81,26 @@ class UserController
         $user = User::withTrashed()->find($userId);
         
         if (!$user) {
-            $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+            return errorResponse($response, 'Usuario no encontrado', 404);
         }
 
         try {
             $userData = [
-                'id' => $user->id,
-                'uuid' => $user->uuid,
-                'first_name' => $user->first_name,
-                'last_name' => $user->last_name,
-                'email' => $user->email
+                'user' => [
+                    'id' => $user->id,
+                    'uuid' => $user->uuid,
+                    'first_name' => $user->first_name,
+                    'last_name' => $user->last_name,
+                    'email' => $user->email
+                ]
             ];
 
             $user->forceDelete(); // Permanent delete
             
-            $responseData = [
-                'message' => 'Usuario eliminado permanentemente',
-                'user' => $userData
-            ];
-
-            $response->getBody()->write(json_encode($responseData));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            return successResponse($response, $userData, 'Usuario eliminado permanentemente');
 
         } catch (\Exception $e) {
-            $response->getBody()->write(json_encode(['error' => 'Error al eliminar permanentemente el usuario']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+            return errorResponse($response, 'Error al eliminar permanentemente el usuario', 500);
         }
     }
 
@@ -138,18 +123,15 @@ class UserController
                 ];
             });
 
-            $responseData = [
-                'message' => 'Usuarios eliminados obtenidos exitosamente',
+            $data = [
                 'users' => $userData,
                 'total_count' => $users->count()
             ];
 
-            $response->getBody()->write(json_encode($responseData));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            return successResponse($response, $data, 'Usuarios eliminados obtenidos exitosamente');
 
         } catch (\Exception $e) {
-            $response->getBody()->write(json_encode(['error' => 'Error al obtener usuarios eliminados']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+            return errorResponse($response, 'Error al obtener usuarios eliminados', 500);
         }
     }
 }

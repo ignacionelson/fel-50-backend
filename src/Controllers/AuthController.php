@@ -17,14 +17,12 @@ class AuthController
         
         $errors = Validator::validate($data, Validator::userRegistration());
         if ($errors) {
-            $response->getBody()->write(json_encode(['errors' => $errors]));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(422);
+            return validationErrorResponse($response, $errors);
         }
 
         $existingUser = User::where('email', $data['email'])->first();
         if ($existingUser) {
-            $response->getBody()->write(json_encode(['error' => 'El correo electrónico ya existe']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(409);
+            return errorResponse($response, 'El correo electrónico ya existe', 409);
         }
 
         try {
@@ -38,8 +36,7 @@ class AuthController
 
             $token = JWTService::generateToken($user->id);
 
-            $responseData = [
-                'message' => 'Usuario registrado exitosamente',
+            $userData = [
                 'user' => [
                     'id' => $user->id,
                     'uuid' => $user->uuid,
@@ -52,12 +49,10 @@ class AuthController
                 'token' => $token
             ];
 
-            $response->getBody()->write(json_encode($responseData));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(201);
+            return successResponse($response, $userData, 'Usuario registrado exitosamente', 201);
 
         } catch (\Exception $e) {
-            $response->getBody()->write(json_encode(['error' => 'Error al registrar usuario']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+            return errorResponse($response, 'Error al registrar usuario', 500);
         }
     }
 
@@ -67,21 +62,18 @@ class AuthController
         
         $errors = Validator::validate($data, Validator::userLogin());
         if ($errors) {
-            $response->getBody()->write(json_encode(['errors' => $errors]));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(422);
+            return validationErrorResponse($response, $errors);
         }
 
         $user = User::where('email', $data['email'])->first();
         
         if (!$user || !$user->verifyPassword($data['password'])) {
-            $response->getBody()->write(json_encode(['error' => 'Credenciales inválidas']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(401);
+            return errorResponse($response, 'Credenciales inválidas', 401);
         }
 
         $token = JWTService::generateToken($user->id);
 
-        $responseData = [
-            'message' => 'Inicio de sesión exitoso',
+        $userData = [
             'user' => [
                 'id' => $user->id,
                 'uuid' => $user->uuid,
@@ -94,7 +86,6 @@ class AuthController
             'token' => $token
         ];
 
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        return successResponse($response, $userData, 'Inicio de sesión exitoso');
     }
 }

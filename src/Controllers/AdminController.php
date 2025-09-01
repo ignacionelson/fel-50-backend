@@ -13,8 +13,7 @@ class AdminController
     {
         $adminUser = $request->getAttribute('user');
         
-        $responseData = [
-            'message' => 'Bienvenido al Panel de Administración',
+        $data = [
             'admin' => [
                 'id' => $adminUser->id,
                 'uuid' => $adminUser->uuid,
@@ -27,8 +26,7 @@ class AdminController
             'timestamp' => date('Y-m-d H:i:s')
         ];
 
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        return successResponse($response, $data, 'Bienvenido al Panel de Administración');
     }
 
     public function getSystemStats(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -47,17 +45,10 @@ class AdminController
                 ]
             ];
 
-            $responseData = [
-                'message' => 'Estadísticas del sistema obtenidas exitosamente',
-                'stats' => $stats
-            ];
-
-            $response->getBody()->write(json_encode($responseData));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            return successResponse($response, ['stats' => $stats], 'Estadísticas del sistema obtenidas exitosamente');
 
         } catch (\Exception $e) {
-            $response->getBody()->write(json_encode(['error' => 'Error al obtener estadísticas del sistema']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+            return errorResponse($response, 'Error al obtener estadísticas del sistema', 500);
         }
     }
 
@@ -97,8 +88,7 @@ class AdminController
                 return $data;
             });
 
-            $responseData = [
-                'message' => 'Usuarios obtenidos exitosamente',
+            $data = [
                 'users' => $userData,
                 'total_count' => $users->count(),
                 'filters' => [
@@ -106,12 +96,10 @@ class AdminController
                 ]
             ];
 
-            $response->getBody()->write(json_encode($responseData));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            return successResponse($response, $data, 'Usuarios obtenidos exitosamente');
 
         } catch (\Exception $e) {
-            $response->getBody()->write(json_encode(['error' => 'Error al obtener usuarios']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+            return errorResponse($response, 'Error al obtener usuarios', 500);
         }
     }
 
@@ -120,8 +108,7 @@ class AdminController
         // This is a placeholder for activity logging functionality
         // In a production system, you would track user actions in a separate activity_logs table
         
-        $responseData = [
-            'message' => 'Registro de actividad obtenido exitosamente',
+        $data = [
             'activities' => [
                 [
                     'id' => 1,
@@ -143,8 +130,7 @@ class AdminController
             'total_count' => 2
         ];
 
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        return successResponse($response, $data, 'Registro de actividad obtenido exitosamente');
     }
 
     private function getUsersByRole(): array

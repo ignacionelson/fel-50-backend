@@ -18,19 +18,16 @@ class RoleController
         
         $user = User::find($userId);
         if (!$user) {
-            $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+            return errorResponse($response, 'Usuario no encontrado', 404);
         }
 
         if (!isset($data['roles']) || !is_array($data['roles'])) {
-            $response->getBody()->write(json_encode(['error' => 'Se requiere un array de roles']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(422);
+            return errorResponse($response, 'Se requiere un array de roles', 422);
         }
 
         foreach ($data['roles'] as $role) {
             if (!RoleService::validateRole($role)) {
-                $response->getBody()->write(json_encode(['error' => "Rol inválido: {$role}"]));
-                return $response->withHeader('Content-Type', 'application/json')->withStatus(422);
+                return errorResponse($response, "Rol inválido: {$role}", 422);
             }
         }
 
@@ -38,8 +35,7 @@ class RoleController
             $user->roles = $data['roles'];
             $user->save();
 
-            $responseData = [
-                'message' => 'Roles de usuario actualizados exitosamente',
+            $userData = [
                 'user' => [
                     'id' => $user->id,
                     'uuid' => $user->uuid,
@@ -52,12 +48,10 @@ class RoleController
                 ]
             ];
 
-            $response->getBody()->write(json_encode($responseData));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+            return successResponse($response, $userData, 'Roles de usuario actualizados exitosamente');
 
         } catch (\Exception $e) {
-            $response->getBody()->write(json_encode(['error' => 'Error al actualizar roles de usuario']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(500);
+            return errorResponse($response, 'Error al actualizar roles de usuario', 500);
         }
     }
 
@@ -67,11 +61,10 @@ class RoleController
         $user = User::find($userId);
         
         if (!$user) {
-            $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+            return errorResponse($response, 'Usuario no encontrado', 404);
         }
 
-        $responseData = [
+        $userData = [
             'user' => [
                 'id' => $user->id,
                 'uuid' => $user->uuid,
@@ -84,8 +77,7 @@ class RoleController
             ]
         ];
 
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        return successResponse($response, $userData);
     }
 
     public function getUserCapabilities(ServerRequestInterface $request, ResponseInterface $response, $args): ResponseInterface
@@ -94,8 +86,7 @@ class RoleController
         $user = User::find($userId);
         
         if (!$user) {
-            $response->getBody()->write(json_encode(['error' => 'Usuario no encontrado']));
-            return $response->withHeader('Content-Type', 'application/json')->withStatus(404);
+            return errorResponse($response, 'Usuario no encontrado', 404);
         }
 
         $capabilities = RoleService::getUserCapabilities($user);
@@ -105,7 +96,7 @@ class RoleController
             $capabilityDescriptions[$capability] = RoleService::getCapabilityDescription($capability);
         }
 
-        $responseData = [
+        $data = [
             'user' => [
                 'id' => $user->id,
                 'uuid' => $user->uuid,
@@ -120,8 +111,7 @@ class RoleController
             'capability_descriptions' => $capabilityDescriptions
         ];
 
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        return successResponse($response, $data);
     }
 
     public function getAvailableRoles(ServerRequestInterface $request, ResponseInterface $response): ResponseInterface
@@ -138,12 +128,11 @@ class RoleController
             ];
         }
 
-        $responseData = [
+        $data = [
             'roles' => $availableRoles,
             'total_count' => count($availableRoles)
         ];
 
-        $response->getBody()->write(json_encode($responseData));
-        return $response->withHeader('Content-Type', 'application/json')->withStatus(200);
+        return successResponse($response, $data);
     }
 }
