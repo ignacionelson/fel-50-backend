@@ -30,9 +30,15 @@ return function (App $app) {
         $group->post('/login', [AuthController::class, 'login']);
         $group->get('/public', [ApiController::class, 'publicRoute']);
 
+        // Account verification routes (public)
+        $group->post('/verify-account', [AuthController::class, 'verifyAccount']);
+        $group->get('/verify-account', [AuthController::class, 'verifyAccount']); // Para links desde email
+        $group->post('/resend-verification', [AuthController::class, 'resendVerificationCode']);
+
         // Protected routes (authentication required)
         $group->group('/private', function ($group) {
             $group->get('/profile', [ApiController::class, 'privateRoute']);
+            $group->post('/complete-profile', [AuthController::class, 'completeProfile']);
         })->add(new JWTMiddleware());
 
         // Role management routes (authentication required)
